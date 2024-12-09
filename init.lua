@@ -190,19 +190,6 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- My Custom Keymaps
-vim.keymap.set('n', '<C-s>', ':w<CR>', { desc = 'Save current file' })
-vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>', { desc = 'Save current file' })
-vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>', { desc = 'Save current file' })
-
-vim.keymap.set('n', '<leader>q', ':q<CR>', { desc = 'Quit nvim' })
-vim.keymap.set('n', '<leader>k', ':bdelete<CR>', { desc = 'Quit nvim' })
-vim.keymap.set('n', '<leader>fq', ':q!<CR>', { desc = 'Force quit nvim' })
-vim.keymap.set('n', '<leader>wq', ':wq<CR>', { desc = 'Save and quit nvim' })
-
-vim.keymap.set('i', ';a', '<Esc>', { desc = 'Switch to normal mode' })
-vim.keymap.set('n', '<leader>v', ':e ~/.config/nvim/init.lua<CR>', { desc = 'Open nvim config' })
-
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -267,6 +254,14 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
     },
+  },
+
+  {
+    'phaazon/hop.nvim',
+    name = 'hop',
+    config = function()
+      require('hop').setup { keys = 'etovxqpdygfblzhckisuran' }
+    end,
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -778,6 +773,14 @@ require('lazy').setup({
       luasnip.config.setup {}
 
       cmp.setup {
+        window = {
+          completion = {
+            border = 'rounded',
+          },
+          documentation = {
+            border = 'rounded',
+          },
+        },
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -888,7 +891,7 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- require('mini.surround').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -947,7 +950,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -995,3 +998,58 @@ vim.cmd [[
 ]]
 
 vim.cmd [[highlight WinSeparator guifg=Black gui=none]]
+
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = 'rounded', -- Options: "none", "single", "double", "rounded", "solid", "shadow"
+})
+
+vim.diagnostic.config {
+  float = {
+    border = 'rounded', -- Options: "none", "single", "double", "rounded", "solid", "shadow"
+  },
+}
+
+-- My Custom Keymaps
+vim.keymap.set('n', '<C-s>', ':w<CR>', { desc = 'Save current file' })
+vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>', { desc = 'Save current file' })
+vim.keymap.set('i', '<C-s>', '<Esc>:w<CR>', { desc = 'Save current file' })
+
+vim.keymap.set('n', '<leader>q', ':q<CR>', { desc = 'Quit nvim' })
+vim.keymap.set('n', '<leader>k', ':bdelete<CR>', { desc = 'Quit nvim' })
+vim.keymap.set('n', '<leader>fq', ':q!<CR>', { desc = 'Force quit nvim' })
+vim.keymap.set('n', '<leader>wq', ':wq<CR>', { desc = 'Save and quit nvim' })
+
+vim.keymap.set('i', ';a', '<Esc>', { desc = 'Switch to normal mode' })
+vim.keymap.set('v', ';a', '<Esc>', { desc = 'Switch to normal mode' })
+vim.keymap.set('n', ';a', '<cmd>nohlsearch<CR>', { desc = 'Stop highlighting' })
+
+vim.keymap.set('n', '<leader>v', ':e ~/.config/nvim/init.lua<CR>', { desc = 'Open nvim config' })
+vim.keymap.set('n', 'gh', vim.lsp.buf.hover, { desc = '[H]over window' })
+vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Show diagnostics under the cursor' })
+vim.keymap.set('n', 's', '<cmd>HopChar1<CR>', { desc = 'Show diagnostics under the cursor' })
+
+local lspconfig = require 'lspconfig'
+
+lspconfig.denols.setup {
+
+  root_dir = lspconfig.util.root_pattern('deno.json', 'deno.jsonc'), -- Specify files to identify a Deno project
+  init_options = {
+    lint = true, -- Enable linting
+    unstable = true, -- Allow unstable APIs
+  },
+}
+
+lspconfig.ts_ls.setup {
+  root_dir = require('lspconfig.util').root_pattern 'package.json',
+}
+
+-- Enable line numbers in netrw
+vim.api.nvim_create_augroup('NetrwSetup', { clear = true })
+vim.api.nvim_create_autocmd('FileType', {
+  group = 'NetrwSetup',
+  pattern = 'netrw',
+  callback = function()
+    vim.opt_local.number = true
+    vim.opt_local.relativenumber = true
+  end,
+})
