@@ -935,13 +935,86 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          node_incremental = 'v',
+          node_decremental = 'V',
+        },
+      },
+      -- Add textobjects configuration directly here
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true, -- Automatically jump forward to textobj
+          keymaps = {
+            -- Define keymaps for text objects
+            ['af'] = '@function.outer', -- Around function
+            ['if'] = '@function.inner', -- Inner function
+            ['ac'] = '@class.outer', -- Around class
+            ['ic'] = '@class.inner', -- Inner class
+            ['aa'] = '@parameter.outer', -- Around function
+            ['ia'] = '@parameter.inner', -- Inner function
+          },
+        },
+        move = {
+          enable = true,
+          set_jumps = true, -- Whether to set jumps in the jumplist
+          goto_next_start = {
+            [']m'] = '@function.outer',
+            [']]'] = '@class.outer',
+          },
+          goto_next_end = {
+            [']M'] = '@function.outer',
+            [']['] = '@class.outer',
+          },
+          goto_previous_start = {
+            ['[m'] = '@function.outer',
+            ['[['] = '@class.outer',
+          },
+          goto_previous_end = {
+            ['[M'] = '@function.outer',
+            ['[]'] = '@class.outer',
+          },
+        },
+        swap = {
+          enable = true,
+          swap_next = {
+            ['<leader>a'] = '@parameter.inner',
+          },
+          swap_previous = {
+            ['<leader>A'] = '@parameter.inner',
+          },
+        },
+      },
+      -- There are additional nvim-treesitter modules that you can use to interact
+      -- with nvim-treesitter. You should go explore a few and see what interests you:
+      --
+      --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+      --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+      --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     },
-    -- There are additional nvim-treesitter modules that you can use to interact
-    -- with nvim-treesitter. You should go explore a few and see what interests you:
-    --
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  },
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    opts = {
+      enable = true, -- Enable this plugin (true by default)
+      max_lines = 0, -- How many lines the context should span
+      patterns = { -- Match patterns for TS nodes. These are Lua patterns.
+        -- For all file types
+        default = {
+          'class',
+          'function',
+          'method',
+        },
+      },
+      zindex = 20, -- The Z-index of the context window
+    },
+  },
+  {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
@@ -971,6 +1044,15 @@ require('lazy').setup({
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
 
+  {
+    'chrisgrieser/nvim-various-textobjs',
+    event = 'VeryLazy',
+    opts = {
+      keymaps = {
+        useDefaults = false,
+      },
+    },
+  },
   {
     'windwp/nvim-ts-autotag',
     config = function()
@@ -1052,6 +1134,9 @@ vim.keymap.set('n', '<leader>v', ':e ~/.config/nvim/init.lua<CR>', { desc = 'Ope
 vim.keymap.set('n', 'gh', vim.lsp.buf.hover, { desc = '[H]over window' })
 vim.keymap.set('n', 'gl', vim.diagnostic.open_float, { desc = 'Show diagnostics under the cursor' })
 vim.keymap.set('n', 's', '<cmd>HopChar1<CR>', { desc = 'Show diagnostics under the cursor' })
+
+vim.keymap.set({ 'o', 'x' }, 'as', '<cmd>lua require("various-textobjs").subword("outer")<CR>')
+vim.keymap.set({ 'o', 'x' }, 'is', '<cmd>lua require("various-textobjs").subword("inner")<CR>')
 
 local lspconfig = require 'lspconfig'
 
