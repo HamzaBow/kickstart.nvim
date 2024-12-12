@@ -1054,6 +1054,17 @@ require('lazy').setup({
     },
   },
   {
+    'stevearc/oil.nvim',
+    ---@module 'oil'
+    ---@type oil.SetupOpts
+    opts = {
+      default_file_explorer = false,
+    },
+    -- Optional dependencies
+    dependencies = { { 'echasnovski/mini.icons', opts = {} } },
+    -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
+  },
+  {
     'windwp/nvim-ts-autotag',
     config = function()
       require('nvim-ts-autotag').setup {
@@ -1137,6 +1148,14 @@ vim.keymap.set('n', 's', '<cmd>HopChar1<CR>', { desc = 'Show diagnostics under t
 
 vim.keymap.set({ 'o', 'x' }, 'as', '<cmd>lua require("various-textobjs").subword("outer")<CR>')
 vim.keymap.set({ 'o', 'x' }, 'is', '<cmd>lua require("various-textobjs").subword("inner")<CR>')
+
+vim.keymap.set('x', 'ie', '<Esc>ggVG', { noremap = true, silent = true }) -- Visual mode
+vim.keymap.set('o', 'ie', function()
+  vim.cmd 'normal! ggVG'
+end, { noremap = true, silent = true }) -- Operator-pending mode
+
+-- vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'Open parent directory' })
+vim.keymap.set('n', '<leader>-', '<cmd>Oil<CR>', { desc = 'Open parent directory' })
 
 local lspconfig = require 'lspconfig'
 
