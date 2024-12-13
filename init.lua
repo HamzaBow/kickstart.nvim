@@ -1065,6 +1065,19 @@ require('lazy').setup({
     -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
   },
   {
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
+    lazy = false,
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require('nvim-tree').setup {
+        hijack_netrw = false,
+      }
+    end,
+  },
+  {
     'windwp/nvim-ts-autotag',
     config = function()
       require('nvim-ts-autotag').setup {
@@ -1156,6 +1169,8 @@ end, { noremap = true, silent = true }) -- Operator-pending mode
 
 -- vim.keymap.set('n', '-', '<cmd>Oil<CR>', { desc = 'Open parent directory' })
 vim.keymap.set('n', '<leader>-', '<cmd>Oil<CR>', { desc = 'Open parent directory' })
+
+vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<CR>', { desc = 'Open parent directory' })
 
 local lspconfig = require 'lspconfig'
 
