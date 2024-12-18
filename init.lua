@@ -1172,6 +1172,10 @@ vim.keymap.set('n', '<leader>-', '<cmd>Oil<CR>', { desc = 'Open parent directory
 
 vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<CR>', { desc = 'Open parent directory' })
 
+vim.keymap.set('n', '<leader>;', ':', { desc = 'Start command mode' })
+
+vim.keymap.set('n', '<leader>x', '<cmd>.lua<CR>', { desc = 'Run lua line' })
+
 local lspconfig = require 'lspconfig'
 
 lspconfig.denols.setup {
@@ -1198,3 +1202,9 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.opt_local.relativenumber = true
   end,
 })
+
+vim.opt.colorcolumn = '80'
+
+vim.cmd [[
+  highlight ColorColumn ctermbg=8 guibg=#3c3836
+]]
