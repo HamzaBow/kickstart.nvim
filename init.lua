@@ -420,6 +420,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<CR>', builtin.oldfiles, { desc = 'Search Recent Files' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>o', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -1000,7 +1001,7 @@ require('lazy').setup({
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
     opts = {
       enable = true, -- Enable this plugin (true by default)
-      max_lines = 0, -- How many lines the context should span
+      max_lines = 10, -- How many lines the context should span
       patterns = { -- Match patterns for TS nodes. These are Lua patterns.
         -- For all file types
         default = {
