@@ -761,12 +761,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -1083,6 +1083,12 @@ require('lazy').setup({
     end,
   },
   {
+    'folke/ts-comments.nvim',
+    opts = {},
+    event = 'VeryLazy',
+    enabled = vim.fn.has 'nvim-0.10.0' == 1,
+  },
+  {
     'windwp/nvim-ts-autotag',
     config = function()
       require('nvim-ts-autotag').setup {
@@ -1180,6 +1186,16 @@ vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeToggle<CR>', { desc = 'Open paren
 vim.keymap.set('n', '<leader>;', ':', { desc = 'Start command mode' })
 
 vim.keymap.set('n', '<leader>x', '<cmd>.lua<CR>', { desc = 'Run lua line' })
+
+vim.keymap.set('n', '<leader>hi', '<cmd>Gitsigns preview_hunk_inline<CR>', { desc = 'Run lua line' })
+vim.keymap.set('n', '<leader>ho', '<cmd>Gitsigns preview_hunk<CR>', { desc = 'Run lua line' })
+
+vim.keymap.set('n', '<leader>co', '<cmd>!code $(pwd) %<CR>', { desc = 'Run lua line' })
+
+-- Add a toggle function
+vim.api.nvim_create_user_command('OilToggleHidden', function()
+  require('oil').toggle_hidden()
+end, {})
 
 local lspconfig = require 'lspconfig'
 
