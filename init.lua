@@ -1192,6 +1192,14 @@ vim.keymap.set('n', '<leader>ho', '<cmd>Gitsigns preview_hunk<CR>', { desc = 'Ru
 
 vim.keymap.set('n', '<leader>co', '<cmd>!code $(pwd) %<CR>', { desc = 'Run lua line' })
 
+vim.keymap.set('n', '<leader>lj', "yiwoconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+
+vim.keymap.set('n', '<leader>lk', "yiwOconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+
+vim.keymap.set('x', '<leader>lvj', "yoconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+
+vim.keymap.set('x', '<leader>lvk', "yOconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+
 -- Add a toggle function
 vim.api.nvim_create_user_command('OilToggleHidden', function()
   require('oil').toggle_hidden()
