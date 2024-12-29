@@ -641,6 +641,7 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
+        clangd = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -1219,6 +1220,20 @@ lspconfig.denols.setup {
 lspconfig.ts_ls.setup {
   root_dir = require('lspconfig.util').root_pattern 'package.json',
   single_file_support = false,
+}
+
+lspconfig.clangd.setup {
+  on_attach = function(client, bufnr)
+    -- Enable auto formatting
+    if client.server_capabilities.documentFormattingProvider then
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format { async = false }
+        end,
+      })
+    end
+  end,
 }
 
 -- Enable line numbers in netrw
