@@ -1140,7 +1140,22 @@ vim.cmd [[
   augroup END
 ]]
 
-vim.cmd [[highlight WinSeparator guifg=Black gui=none]]
+-- Example: single-thickness Unicode line characters
+vim.opt.fillchars = {
+  horiz = '─', -- the actual horizontal line
+  horizup = '┴',
+  horizdown = '┬',
+  vert = '│', -- vertical line
+  verthoriz = '┼',
+  vertleft = '┤',
+  vertright = '├',
+}
+
+-- vim.cmd [[highlight WinSeparator guifg=Black gui=none]]
+
+vim.cmd [[
+  highlight WinSeparator guifg=#444444 gui=none
+]]
 
 vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
   border = 'rounded', -- Options: "none", "single", "double", "rounded", "solid", "shadow"
@@ -1193,14 +1208,6 @@ vim.keymap.set('n', '<leader>ho', '<cmd>Gitsigns preview_hunk<CR>', { desc = 'Ru
 
 vim.keymap.set('n', '<leader>co', '<cmd>!code $(pwd) %<CR>', { desc = 'Run lua line' })
 
-vim.keymap.set('n', '<leader>lj', "yiwoconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
-
-vim.keymap.set('n', '<leader>lk', "yiwOconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
-
-vim.keymap.set('x', '<leader>lvj', "yoconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
-
-vim.keymap.set('x', '<leader>lvk', "yOconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
-
 -- Add a toggle function
 vim.api.nvim_create_user_command('OilToggleHidden', function()
   require('oil').toggle_hidden()
@@ -1247,8 +1254,38 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'go',
+  callback = function()
+    vim.keymap.set('n', '<leader>lj', 'yiwofmt.Println("<Esc>pa >>", <Esc>pa)<Esc>', { desc = 'Run lua line' })
+    vim.keymap.set('n', '<leader>lk', 'yiwOfmt.Println("<Esc>pa >>", <Esc>pa)<Esc>', { desc = 'Run lua line' })
+    vim.keymap.set('x', '<leader>lvj', 'yofmt.Println("<Esc>pa >>", <Esc>pa)<Esc>', { desc = 'Run lua line' })
+    vim.keymap.set('x', '<leader>lvk', 'yOfmt.Println("<Esc>pa >>", <Esc>pa)<Esc>', { desc = 'Run lua line' })
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'rust',
+  callback = function()
+    vim.keymap.set('n', '<leader>lj', 'yiwoprintln!("<Esc>pa >> {}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
+    vim.keymap.set('n', '<leader>lk', 'yiwOprintln!("<Esc>pa >> {}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
+    vim.keymap.set('x', '<leader>lvj', 'yoprintln!("<Esc>pa >> {}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
+    vim.keymap.set('x', '<leader>lvk', 'yOprintln!("<Esc>pa >> {}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+  callback = function()
+    vim.keymap.set('n', '<leader>lj', "yiwoconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+    vim.keymap.set('n', '<leader>lk', "yiwOconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+    vim.keymap.set('x', '<leader>lvj', "yoconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+    vim.keymap.set('x', '<leader>lvk', "yOconsole.log('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+  end,
+})
+
 vim.opt.colorcolumn = '80'
 
-vim.cmd [[
-  highlight ColorColumn ctermbg=8 guibg=#3c3836
-]]
+-- vim.cmd [[
+--   highlight ColorColumn ctermbg=8 guibg=#3c3836
+-- ]]
