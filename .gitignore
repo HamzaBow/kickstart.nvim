@@ -5,3 +5,4 @@ nvim
 lua-drafts
 
 spell/
+.env

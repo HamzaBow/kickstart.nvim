@@ -630,10 +630,10 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
+        clangd = {},
+        gopls = {},
         -- pyright = {},
-        -- rust_analyzer = {},
+        rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -642,7 +642,6 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
-        clangd = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -1108,6 +1107,57 @@ require('lazy').setup({
       }
     end,
   },
+  {
+    'yetone/avante.nvim',
+    event = 'VeryLazy',
+    lazy = false,
+    version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
+    opts = {
+      -- add any opts here
+      -- provider = 'openai',
+      -- auto_suggestions_provider = 'openai',
+    },
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    build = 'make',
+    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+    dependencies = {
+      'stevearc/dressing.nvim',
+      'nvim-lua/plenary.nvim',
+      'MunifTanjim/nui.nvim',
+      --- The below dependencies are optional,
+      'echasnovski/mini.pick', -- for file_selector provider mini.pick
+      'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
+      'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
+      'ibhagwan/fzf-lua', -- for file_selector provider fzf
+      'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
+      'zbirenbaum/copilot.lua', -- for providers='copilot'
+      {
+        -- support for image pasting
+        'HakonHarnes/img-clip.nvim',
+        event = 'VeryLazy',
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { 'markdown', 'Avante' },
+        },
+        ft = { 'markdown', 'Avante' },
+      },
+    },
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -1207,7 +1257,7 @@ vim.keymap.set('n', '<leader>x', '<cmd>.lua<CR>', { desc = 'Run lua line' })
 vim.keymap.set('n', '<leader>hi', '<cmd>Gitsigns preview_hunk_inline<CR>', { desc = 'Run lua line' })
 vim.keymap.set('n', '<leader>ho', '<cmd>Gitsigns preview_hunk<CR>', { desc = 'Run lua line' })
 
-vim.keymap.set('n', '<leader>co', '<cmd>!code $(pwd) %<CR>', { desc = 'Run lua line' })
+vim.keymap.set('n', '<leader>co', '<cmd>!code -n $(pwd) %<CR>', { desc = 'Run lua line' })
 
 -- Add a toggle function
 vim.api.nvim_create_user_command('OilToggleHidden', function()
@@ -1290,3 +1340,27 @@ vim.opt.colorcolumn = '80'
 -- vim.cmd [[
 --   highlight ColorColumn ctermbg=8 guibg=#3c3836
 -- ]]
+
+local function load_env_vars(filename)
+  local env_file = io.open(filename, 'r')
+  if env_file then
+    for line in env_file:lines() do
+      if not line:match '^%s*#' and line:match '=' then
+        local key, value = line:match '([^=]+)=(.+)'
+        if key and value then
+          if key and value then
+            vim.env[key:match '^%s*(.-)%s*$'] = value:match '^%s*(.-)%s*$'
+          end
+        end
+      end
+    end
+    env_file:close()
+  end
+end
+
+load_env_vars(vim.fn.stdpath 'config' .. '/.env')
+
+vim.api.nvim_create_user_command('AvanteCurrentProvider', function()
+  local provider = require('avante.config').provider
+  print('Current Avante provider: ' .. provider)
+end, {})
