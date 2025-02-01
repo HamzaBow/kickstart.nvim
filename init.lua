@@ -1114,8 +1114,15 @@ require('lazy').setup({
     version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
     opts = {
       -- add any opts here
-      -- provider = 'openai',
-      -- auto_suggestions_provider = 'openai',
+      provider = 'openai',
+      auto_suggestions_provider = 'openai',
+      -- behaviour = {
+      --   auto_suggestions = true,
+      -- },
+      windows = {
+        width = 40,
+      },
+      --
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = 'make',
@@ -1254,10 +1261,11 @@ vim.keymap.set('n', '<leader>;', ':', { desc = 'Start command mode' })
 
 vim.keymap.set('n', '<leader>x', '<cmd>.lua<CR>', { desc = 'Run lua line' })
 
-vim.keymap.set('n', '<leader>hi', '<cmd>Gitsigns preview_hunk_inline<CR>', { desc = 'Run lua line' })
-vim.keymap.set('n', '<leader>ho', '<cmd>Gitsigns preview_hunk<CR>', { desc = 'Run lua line' })
+vim.keymap.set('n', '<leader>hi', '<cmd>Gitsigns preview_hunk_inline<CR>', { desc = 'Gitsigns Preview Hunk Inline' })
+vim.keymap.set('n', '<leader>ho', '<cmd>Gitsigns preview_hunk<CR>', { desc = 'Gitsigns Preview Hunk' })
 
-vim.keymap.set('n', '<leader>co', '<cmd>!code -n $(pwd) %<CR>', { desc = 'Run lua line' })
+vim.keymap.set('n', '<leader>co', '<cmd>!code -n $(pwd) %<CR>', { desc = 'Open file in project using VS Code' })
+vim.keymap.set('n', '<leader>cu', '<cmd>!cursor -n $(pwd) %<CR>', { desc = 'Open file in project using Curosr' })
 
 -- Add a toggle function
 vim.api.nvim_create_user_command('OilToggleHidden', function()
