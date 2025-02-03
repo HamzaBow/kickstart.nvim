@@ -1343,6 +1343,16 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'python', 'lua' },
+  callback = function()
+    vim.keymap.set('n', '<leader>lj', "yiwoprint('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+    vim.keymap.set('n', '<leader>lk', "yiwOprint('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+    vim.keymap.set('x', '<leader>lvj', "yoprint('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+    vim.keymap.set('x', '<leader>lvk', "yOprint('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+  end,
+})
+
 vim.opt.colorcolumn = '80'
 
 -- vim.cmd [[
