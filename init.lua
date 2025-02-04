@@ -1381,3 +1381,17 @@ vim.api.nvim_create_user_command('AvanteCurrentProvider', function()
   local provider = require('avante.config').provider
   print('Current Avante provider: ' .. provider)
 end, {})
+
+-- Output of `:Mason` command
+--
+-- Installed
+--   ◍ taplo (keywords: toml)
+--   ◍ bash-language-server bashls (keywords: bash)
+--   ◍ black (keywords: python)
+--   ◍ clangd (keywords: c, c++)
+--   ◍ gopls (keywords: go)
+--   ◍ isort (keywords: python)
+--   ◍ lua-language-server lua_ls (keywords: lua)
+--   ◍ pyright (keywords: python)
+--   ◍ rust-analyzer rust_analyzer (keywords: rust)
+--   ◍ stylua (keywords: lua, luau)
