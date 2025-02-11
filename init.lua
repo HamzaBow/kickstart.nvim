@@ -1391,6 +1391,30 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+function ToggleDiagnostics()
+  local diagnostics_enabled = vim.diagnostic.is_enabled()
+  if diagnostics_enabled then
+    vim.diagnostic.disable()
+    print 'Diagnostics disabled'
+  else
+    vim.diagnostic.enable()
+    print 'Diagnostics enabled'
+  end
+end
+
+vim.api.nvim_set_keymap('n', '<leader>td', ':lua ToggleDiagnostics()<CR>', { noremap = true, silent = true })
+
+vim.api.nvim_create_user_command('CmpToggle', function()
+  local cmp = require 'cmp'
+  cmp.setup { enabled = not cmp.get_config().enabled }
+  print('nvim-cmp ' .. (cmp.get_config().enabled and 'enabled' or 'disabled'))
+end, {})
+
+vim.api.nvim_set_keymap('n', '<leader>tc', '<cmd>CmpToggle<CR>', { noremap = true, silent = true })
+
+-- remove "^M" characters (CRLF) that appear at the end of lines when copying code from Window to WSL line buffer (file)
+vim.api.nvim_set_keymap('n', '<leader>cr', [[:%s/\r$//<CR>]], { noremap = true, silent = true })
+
 vim.opt.colorcolumn = '80'
 
 -- vim.cmd [[
