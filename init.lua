@@ -640,7 +640,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        ts_ls = {},
         --
 
         lua_ls = {
@@ -768,6 +768,9 @@ require('lazy').setup({
             end,
           },
         },
+        config = function()
+          require('luasnip.loaders.from_lua').lazy_load { paths = { '~/.config/nvim/lua/snippets' } }
+        end,
       },
       'saadparwaiz1/cmp_luasnip',
 
@@ -821,8 +824,28 @@ require('lazy').setup({
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
           ['<CR>'] = cmp.mapping.confirm { select = true },
-          ['<Tab>'] = cmp.mapping.select_next_item(),
-          ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+          -- ['<Tab>'] = cmp.mapping.select_next_item(),
+          -- ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+
+          ['<Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item() -- Prioritize completion menu first
+            elseif luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump() -- Then handle snippet expansion/jumping
+            else
+              fallback() -- Otherwise, insert a tab
+            end
+          end, { 'i', 's' }),
+
+          ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item() -- Prioritize autocompletion navigation
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1) -- Then handle snippet jumping backwards
+            else
+              fallback() -- Otherwise, insert a Shift-Tab (if applicable)
+            end
+          end, { 'i', 's' }),
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -921,6 +944,8 @@ require('lazy').setup({
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
+
+      require('mini.misc').setup()
     end,
   },
   { -- Highlight, edit, and navigate code
@@ -1266,6 +1291,10 @@ vim.keymap.set('n', '<leader>ho', '<cmd>Gitsigns preview_hunk<CR>', { desc = 'Gi
 vim.keymap.set('n', '<leader>co', '<cmd>!code -n $(pwd) %<CR>', { desc = 'Open file in project using VS Code' })
 vim.keymap.set('n', '<leader>cu', '<cmd>!cursor -n $(pwd) %<CR>', { desc = 'Open file in project using Curosr' })
 
+vim.keymap.set('n', '<leader>z', function()
+  require('mini.misc').zoom()
+end, { desc = 'Toggle window zoom' })
+
 -- Add a toggle function
 vim.api.nvim_create_user_command('OilToggleHidden', function()
   require('oil').toggle_hidden()
@@ -1349,6 +1378,16 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.keymap.set('n', '<leader>lk', "yiwOprint('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
     vim.keymap.set('x', '<leader>lvj', "yoprint('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
     vim.keymap.set('x', '<leader>lvk', "yOprint('<Esc>pa >> ', <Esc>pa)<Esc>", { desc = 'Run lua line' })
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'sh',
+  callback = function()
+    vim.keymap.set('n', '<leader>lj', "yiwoecho '<Esc>pa >> ' $<Esc>p", { desc = 'Run shell line' })
+    vim.keymap.set('n', '<leader>lk', "yiwOecho '<Esc>pa >> ' $<Esc>p", { desc = 'Run shell line' })
+    vim.keymap.set('x', '<leader>lvj', "yoecho '<Esc>pa >> ' $<Esc>p", { desc = 'Run shell line' })
+    vim.keymap.set('x', '<leader>lvk', "yOecho '<Esc>pa >> ' $<Esc>p", { desc = 'Run shell line' })
   end,
 })
 
