@@ -1354,10 +1354,10 @@ vim.api.nvim_create_autocmd('FileType', {
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'rust',
   callback = function()
-    vim.keymap.set('n', '<leader>lj', 'yiwoprintln!("<Esc>pa >> {}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
-    vim.keymap.set('n', '<leader>lk', 'yiwOprintln!("<Esc>pa >> {}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
-    vim.keymap.set('x', '<leader>lvj', 'yoprintln!("<Esc>pa >> {}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
-    vim.keymap.set('x', '<leader>lvk', 'yOprintln!("<Esc>pa >> {}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
+    vim.keymap.set('n', '<leader>lj', 'yiwoprintln!("<Esc>pa >> {:#?}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
+    vim.keymap.set('n', '<leader>lk', 'yiwOprintln!("<Esc>pa >> {:#?}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
+    vim.keymap.set('x', '<leader>lvj', 'yoprintln!("<Esc>pa >> {:#?}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
+    vim.keymap.set('x', '<leader>lvk', 'yOprintln!("<Esc>pa >> {:#?}", <Esc>pa);<Esc>', { desc = 'Run lua line' })
   end,
 })
 
@@ -1394,10 +1394,10 @@ vim.api.nvim_create_autocmd('FileType', {
 function ToggleDiagnostics()
   local diagnostics_enabled = vim.diagnostic.is_enabled()
   if diagnostics_enabled then
-    vim.diagnostic.disable()
+    vim.diagnostic.enable(false)
     print 'Diagnostics disabled'
   else
-    vim.diagnostic.enable()
+    vim.diagnostic.enable(true)
     print 'Diagnostics enabled'
   end
 end
@@ -1409,6 +1409,9 @@ vim.api.nvim_create_user_command('CmpToggle', function()
   cmp.setup { enabled = not cmp.get_config().enabled }
   print('nvim-cmp ' .. (cmp.get_config().enabled and 'enabled' or 'disabled'))
 end, {})
+
+vim.cmd 'CmpToggle'
+vim.diagnostic.enable(false)
 
 vim.api.nvim_set_keymap('n', '<leader>tc', '<cmd>CmpToggle<CR>', { noremap = true, silent = true })
 
