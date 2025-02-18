@@ -1093,6 +1093,14 @@ require('lazy').setup({
     -- Optional dependencies
     dependencies = { { 'echasnovski/mini.icons', opts = {} } },
     -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
+    config = function()
+      require('oil').setup {
+        keymaps = {
+          ['<C-s>'] = false,
+          ['<M-s>'] = 'actions.select_vsplit',
+        },
+      }
+    end,
   },
   {
     'nvim-tree/nvim-tree.lua',
@@ -1410,15 +1418,15 @@ vim.api.nvim_create_user_command('CmpToggle', function()
   print('nvim-cmp ' .. (cmp.get_config().enabled and 'enabled' or 'disabled'))
 end, {})
 
-vim.cmd 'CmpToggle'
-vim.diagnostic.enable(false)
-
 vim.api.nvim_set_keymap('n', '<leader>tc', '<cmd>CmpToggle<CR>', { noremap = true, silent = true })
 
 -- remove "^M" characters (CRLF) that appear at the end of lines when copying code from Window to WSL line buffer (file)
+--
+
 vim.api.nvim_set_keymap('n', '<leader>cr', [[:%s/\r$//<CR>]], { noremap = true, silent = true })
 
 vim.opt.colorcolumn = '80'
+-- vim.o.textwidth = 80
 
 -- vim.cmd [[
 --   highlight ColorColumn ctermbg=8 guibg=#3c3836
@@ -1461,3 +1469,6 @@ end, {})
 --   ◍ pyright (keywords: python)
 --   ◍ rust-analyzer rust_analyzer (keywords: rust)
 --   ◍ stylua (keywords: lua, luau)
+
+-- vim.cmd 'CmpToggle'
+-- vim.diagnostic.enable(false)
